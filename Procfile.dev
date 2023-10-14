@@ -1,0 +1,2 @@
+postgres: postgres -D data
+css: bin/rails tailwindcss:watch

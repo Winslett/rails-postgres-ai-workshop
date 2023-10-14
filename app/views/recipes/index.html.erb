@@ -1,0 +1,30 @@
+<header>
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <h1 class="text-3xl font-bold leading-tight tracking-tight text-gray-900">Recipes</h1>
+  </div>
+</header>
+<main>
+  <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+    <ul role="list" class="divide-y divide-gray-100">
+      <% @recipes.each do |recipe| %>
+      <li class="flex justify-between gap-x-6 py-5">
+        <div class="flex min-w-0 gap-x-4">
+          <div class="min-w-0 flex-auto">
+            <p class="text-sm font-semibold leading-6 text-gray-900">
+              <%= link_to recipe.name, recipe, class: "hover:underline" %>
+            </p>
+            <p class="mt-1 flex text-xs leading-5 text-gray-500">
+              <%= recipe.description.try(:truncate, 128) %>
+            </p>
+          </div>
+        </div>
+        <div class="flex shrink-0 items-center gap-x-6">
+          <div class="hidden sm:flex sm:flex-col sm:items-end">
+            <p class="mt-1 text-xs leading-5 text-gray-500">Created <time datetime="<%= recipe.created_at.to_json %>"><%= time_ago_in_words(recipe.created_at) %> ago</time></p>
+          </div>
+        </div>
+      </li>
+      <% end %>
+    </ul>
+  </div>
+</main>
