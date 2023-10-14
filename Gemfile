@@ -9,6 +9,7 @@ gem "rails", "~> 7.1.1"
 gem "propshaft"
 
 gem 'redcarpet'
+gem 'ruby-openai'
 
 # Use postgresql as the database for Active Record
 gem "pg", "~> 1.1"

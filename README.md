@@ -1,24 +1,41 @@
-# README
+# Rails + Postgres + AI Build
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This is a tutorial presented at All Things Open 2023 to highligh how
+easy it is to build a recommendation engine use OpenAI + Postgres + Ruby
+on Rails.
 
-Things you may want to cover:
+Requirements are:
 
-* Ruby version
+* Ruby 3.2.1
+* Rails 7.1.1
+* Postgres 16 w/ Vector Extension
 
-* System dependencies
+If you don't have a Ruby installation, checkout [rbenv](https://github.com/rbenv/rbenv).
 
-* Configuration
+If you don't have a Postgres installation, checkout [Hombrew](https://brew.sh/) and run `brew install postgresql@16`.
 
-* Database creation
+To install the `vector` extension, you can clone the [pgvector](https://github.com/pgvector/pgvector) repo and run `make && make install`.  Then, you'll have access to the vector extension.
 
-* Database initialization
+Once you have the requirements, run the following:
 
-* How to run the test suite
+```
+git clone <repo>
+cd <repo>
+```
 
-* Services (job queues, cache servers, search engines, etc.)
+Initialize Postgres:
+```
+initdb -D data
+```
 
-* Deployment instructions
+Run Postgres + Propshaft:
+```
+./bin/dev
+```
 
-* ...
+Start Rails server in another terminal:
+```
+rails s
+```
+
+Open the URL printed from the above command in a browser.
