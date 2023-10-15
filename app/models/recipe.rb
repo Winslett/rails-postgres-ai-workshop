@@ -27,4 +27,29 @@ class Recipe < ApplicationRecord
       Recipe.where(id: recipe_ids)
     end
   end
+
+  def self.search(q, limit = 20)
+    openai = OpenAI::Client.new(access_token: Rails.application.credentials.openai.api_key)
+    response = openai.embeddings(
+      parameters: {
+        model: 'text-embedding-ada-002',
+        input: q
+      }
+    )
+
+    q_embeddings = response["data"][0]["embedding"].to_s
+
+    Recipe.find_by_sql([<<-SQL, q_embeddings, limit])
+      SELECT
+        recipes.id,
+        recipes.name,
+        recipes.description,
+        recipes.created_at,
+        recipes.updated_at
+      FROM recipe_embeddings
+        INNER JOIN recipes ON recipe_embeddings.recipe_id = recipes.id
+      ORDER BY recipe_embeddings.embedding <-> ?
+      LIMIT ?
+SQL
+  end
 end
