@@ -10,9 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_10_13_184849) do
+ActiveRecord::Schema[7.1].define(version: 2023_10_16_202038) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "vector"
+
+# Could not dump table "recipe_embeddings" because of following StandardError
+#   Unknown type 'vector(1536)' for column 'embedding'
 
   create_table "recipes", force: :cascade do |t|
     t.string "name"
@@ -21,4 +25,17 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_13_184849) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "recommended_caches", primary_key: ["recipe_id", "rank"], force: :cascade do |t|
+    t.integer "rank", null: false
+    t.bigint "recipe_id", null: false
+    t.bigint "recommended_recipe_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["recipe_id"], name: "index_recommended_caches_on_recipe_id"
+    t.index ["recommended_recipe_id"], name: "index_recommended_caches_on_recommended_recipe_id"
+  end
+
+  add_foreign_key "recipe_embeddings", "recipes"
+  add_foreign_key "recommended_caches", "recipes"
+  add_foreign_key "recommended_caches", "recipes", column: "recommended_recipe_id"
 end
