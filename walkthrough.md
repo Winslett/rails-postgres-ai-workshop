@@ -1,8 +1,8 @@
--1. Runs `rails db:drop && rails db:create && rail db:migrate && rails db:seed`
+1. The `main` branch is the final state.  To start with this walk-through, run `git checkout start_here` to start with that branch
 
-0. Open recipes#show page in the browser
+2. Run `rails db:drop && rails db:create && rail db:migrate && rails db:seed` -- start the app with your preferred way. If you don't have a preferred way, run `rails s`
 
-1. Add to Gemfile && bundle install
+3. Add to Gemfile && bundle install
 
 ```
 gem 'ruby-openai'
@@ -14,13 +14,13 @@ run
 bundle install
 ```
 
-2. Run the following:
+4. Run the following:
 
 ```
 rails g model RecipeEmbedding
 ```
 
-3. Add the following to the latest migration && run `rails db:migrate`
+5. Add the following to the latest migration && run `rails db:migrate`
 
 ```
     ActiveRecord::Base.connection.execute("CREATE EXTENSION IF NOT EXISTS vector;")
@@ -33,7 +33,7 @@ rails g model RecipeEmbedding
     end
 ```
 
-4. Add the following associations to our models:
+6. Add the following associations to our models:
 
 `app/models/recipe_embedding.rb`
 ```
@@ -46,14 +46,14 @@ belongs_to :recipe
 has_one :recipe_embedding
 ```
 
-4. `EDITOR=vim rails credentials:edit --environment development`
+7. `EDITOR=vim rails credentials:edit --environment development`
 
 ```
 openai:
  api_key: <a key that you get from openai>
 ```
 
-5. Add the file `lib/tasks/openai.rake`
+8. Add the file `lib/tasks/openai.rake`
 
 ```
 namespace :openai do
@@ -88,15 +88,15 @@ namespace :openai do
 end
 ```
 
-6. rake openai:build_recipe_embeddings
+9. rake openai:build_recipe_embeddings
 
 ```
 psql rails_postgres_ai_workshop_development
 ```
 
-7. Open the recipes#show page in the browser
+10. Open the recipes#show page in the browser
 
-8. add to `app/views/recipes/show.erb.html` && refresh page
+11. add to `app/views/recipes/show.erb.html` && refresh page
 
 
 ```
@@ -114,7 +114,7 @@ psql rails_postgres_ai_workshop_development
         </dl>
 ```
 
-9. Add the following to the app/models/recipe.rb:
+12. Add the following to the app/models/recipe.rb:
 
 ```
   def recommended(limit = 5)
@@ -132,9 +132,9 @@ SQL
   end
 ```
 
-10. Now go back and refresh the page to see that the recommendations are showing:
+13. Now go back and refresh the page to see that the recommendations are showing:
 
-11. Now, open `psql rails_postgres_ai_workshop_development` and highlight the 'rows=710' at the bottom as being a table scan:
+14. Now, open `psql rails_postgres_ai_workshop_development` and highlight the 'rows=710' at the bottom as being a table scan:
 
 ```
 EXPLAIN SELECT
@@ -146,7 +146,7 @@ EXPLAIN SELECT
     LIMIT 5;
 ```
 
-12. Let's use a migration to add an index:
+15. Let's use a migration to add an index:
 
 ```
 rails g migration add_hnsw_index
@@ -166,7 +166,7 @@ SQL
 rails db:migrate
 ```
 
-13. Now, open `psql rails_postgres_ai_workshop_development` and highlight the 'rows=710' at the bottom as being a table scan:
+16. Now, open `psql rails_postgres_ai_workshop_development` and highlight the 'rows=710' at the bottom as being a table scan:
 
 ```
 EXPLAIN SELECT
@@ -178,7 +178,7 @@ EXPLAIN SELECT
     LIMIT 5;
 ```
 
-14. Open app/models/recipe.rb and change the recommended method to:
+17. Open app/models/recipe.rb and change the recommended method to:
 
 ```
   def recommended(limit = 5)
@@ -201,13 +201,13 @@ SQL
   end
 ```
 
-15. Create a cache model for the Rails application, run the following:
+18. Create a cache model for the Rails application, run the following:
 
 ```
 rails g model recommended_cache
 ```
 
-16. Edit the latest migration the add the following:
+19. Edit the latest migration the add the following:
 
 ```
     create_table :recommended_caches, primary_key: [:recipe_id, :rank] do |t|
@@ -226,14 +226,14 @@ run
 rails db:migrate
 ```
 
-17. Add the `app/models/recommended_cache.rb`
+20. Add the `app/models/recommended_cache.rb`
 
 ```
   belongs_to :recipe
   belongs_to :recommended_recipe, class_name: 'Recipe'
 ```
 
-18. Add the following to app/models/recipe.rb
+21. Add the following to app/models/recipe.rb
 
 ```
   has_many :recommended_cache, -> { order('rank') }
@@ -267,14 +267,14 @@ SQL
         RecommendedCache.upsert({recipe_id: self.id, rank: i, recommended_recipe_id: recommended_recipe.id})
       end
 
-      recommended_recipe
+      recommended_recipes
     end
   end
 ```
 
-19. Now, go refresh the page, and you'll see that the recommendations are still there, but the page loads faster at scale
+22. Now, go refresh the page, and you'll see that the recommendations are still there, but the page loads faster at scale
 
-20. For search, add the following to the `app/views/recipes/index.html.erb`:
+23. For search, add the following to the `app/views/recipes/index.html.erb`:
 
 ```
   <!-- add a search box -->
@@ -298,7 +298,7 @@ SQL
   </div>
 ```
 
-21. Change the index method on `app/controllers/recipes_controller.rb` to:
+24. Change the index method on `app/controllers/recipes_controller.rb` to:
 
 ```
   def index
@@ -310,7 +310,7 @@ SQL
   end
 ```
 
-22. Add the following to the `app/models/recipe.rb`
+25. Add the following to the `app/models/recipe.rb`
 
 ```
   def self.search(q, limit = 20)
