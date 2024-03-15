@@ -226,7 +226,7 @@ run
 rails db:migrate
 ```
 
-17. Add the `app/models/recommended_cache.rb`
+17. Add the following to `app/models/recommended_cache.rb`
 
 ```
   belongs_to :recipe
