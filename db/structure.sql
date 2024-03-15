@@ -9,20 +9,6 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
---
--- Name: vector; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS vector WITH SCHEMA public;
-
-
---
--- Name: EXTENSION vector; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON EXTENSION vector IS 'vector data type and ivfflat and hnsw access methods';
-
-
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -34,18 +20,6 @@ SET default_table_access_method = heap;
 CREATE TABLE public.ar_internal_metadata (
     key character varying NOT NULL,
     value character varying,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
-);
-
-
---
--- Name: recipe_embeddings; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.recipe_embeddings (
-    recipe_id bigint NOT NULL,
-    embedding public.vector(1536) NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );
@@ -108,14 +82,6 @@ ALTER TABLE ONLY public.ar_internal_metadata
 
 
 --
--- Name: recipe_embeddings recipe_embeddings_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.recipe_embeddings
-    ADD CONSTRAINT recipe_embeddings_pkey PRIMARY KEY (recipe_id);
-
-
---
 -- Name: recipes recipes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -132,27 +98,11 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
--- Name: index_recipe_embeddings_on_recipe_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_recipe_embeddings_on_recipe_id ON public.recipe_embeddings USING btree (recipe_id);
-
-
---
--- Name: recipe_embeddings fk_rails_8e93973739; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.recipe_embeddings
-    ADD CONSTRAINT fk_rails_8e93973739 FOREIGN KEY (recipe_id) REFERENCES public.recipes(id);
-
-
---
 -- PostgreSQL database dump complete
 --
 
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
-('20231016195607'),
 ('20231013184849');
 
