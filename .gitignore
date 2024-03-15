@@ -38,4 +38,4 @@
 !/app/assets/builds/.keep
 data/*
 
-/config/credentials/development.key
+config/credentials/*

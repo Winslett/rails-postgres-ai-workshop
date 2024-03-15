@@ -96,7 +96,7 @@ psql rails_postgres_ai_workshop_development
 
 7. Open the recipes#show page in the browser
 
-8. add to `app/views/recipes/show.erb.html` && refresh page
+8. add to `app/views/recipes/show.html.erb` && refresh page
 
 
 ```

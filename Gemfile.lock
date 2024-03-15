@@ -137,6 +137,8 @@ GEM
     msgpack (1.7.2)
     multipart-post (2.3.0)
     mutex_m (0.1.2)
+    neighbor (0.3.2)
+      activerecord (>= 6.1)
     net-imap (0.4.1)
       date
       net-protocol
@@ -265,6 +267,7 @@ DEPENDENCIES
   debug
   importmap-rails
   jbuilder
+  neighbor
   pg (~> 1.1)
   propshaft
   puma (>= 5.0)
