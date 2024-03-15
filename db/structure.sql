@@ -84,19 +84,6 @@ ALTER SEQUENCE public.recipes_id_seq OWNED BY public.recipes.id;
 
 
 --
--- Name: recommended_caches; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.recommended_caches (
-    rank integer NOT NULL,
-    recipe_id bigint NOT NULL,
-    recommended_recipe_id bigint NOT NULL,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
-);
-
-
---
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -137,14 +124,6 @@ ALTER TABLE ONLY public.recipes
 
 
 --
--- Name: recommended_caches recommended_caches_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.recommended_caches
-    ADD CONSTRAINT recommended_caches_pkey PRIMARY KEY (recipe_id, rank);
-
-
---
 -- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -160,48 +139,11 @@ CREATE INDEX index_recipe_embeddings_on_recipe_id ON public.recipe_embeddings US
 
 
 --
--- Name: index_recommended_caches_on_recipe_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_recommended_caches_on_recipe_id ON public.recommended_caches USING btree (recipe_id);
-
-
---
--- Name: index_recommended_caches_on_recommended_recipe_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_recommended_caches_on_recommended_recipe_id ON public.recommended_caches USING btree (recommended_recipe_id);
-
-
---
--- Name: recipe_embeddings_embedding; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX recipe_embeddings_embedding ON public.recipe_embeddings USING hnsw (embedding public.vector_l2_ops) WITH (m='4', ef_construction='10');
-
-
---
--- Name: recommended_caches fk_rails_8e742503da; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.recommended_caches
-    ADD CONSTRAINT fk_rails_8e742503da FOREIGN KEY (recommended_recipe_id) REFERENCES public.recipes(id);
-
-
---
 -- Name: recipe_embeddings fk_rails_8e93973739; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.recipe_embeddings
     ADD CONSTRAINT fk_rails_8e93973739 FOREIGN KEY (recipe_id) REFERENCES public.recipes(id);
-
-
---
--- Name: recommended_caches fk_rails_eab90c743f; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.recommended_caches
-    ADD CONSTRAINT fk_rails_eab90c743f FOREIGN KEY (recipe_id) REFERENCES public.recipes(id);
 
 
 --
@@ -211,8 +153,6 @@ ALTER TABLE ONLY public.recommended_caches
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
-('20231016202038'),
-('20231016201402'),
 ('20231016195607'),
 ('20231013184849');
 
