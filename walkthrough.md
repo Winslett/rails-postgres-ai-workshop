@@ -1,6 +1,6 @@
 1. The `main` branch is the final state.  To start with this walk-through, run `git checkout start_here` to start with that branch
 
-2. Run `rails db:drop && rails db:create && rail db:migrate && rails db:seed` -- start the app with your preferred way. If you don't have a preferred way, run `rails s`
+2. Run `rails db:drop && rails db:create && rails db:migrate && rails db:seed` -- start the app with your preferred way. If you don't have a preferred way, run `rails s`
 
 3. Add to Gemfile && bundle install
 
@@ -94,9 +94,30 @@ end
 psql rails_postgres_ai_workshop_development
 ```
 
+```
+ SELECT
+      re2.recipe_id
+ FROM recipe_embeddings AS re1, recipe_embeddings AS re2
+ WHERE re1.recipe_id = 113
+   AND re1.recipe_id != re2.recipe_id
+ ORDER BY re1.embedding <-> re2.embedding
+ LIMIT 5
+```
+
+
+```
+ SELECT
+      re2.recipe_id
+ FROM recipe_embeddings AS re1, recipe_embeddings AS re2
+ WHERE re1.recipe_id = 137
+   AND re1.recipe_id != re2.recipe_id
+ ORDER BY re1.embedding <-> re2.embedding DESC
+ LIMIT 5
+```
+
 10. Open the recipes#show page in the browser
 
-11. add to `app/views/recipes/show.erb.html` && refresh page
+11. add to `app/views/recipes/show.html.erb` && refresh page
 
 
 ```
@@ -178,7 +199,7 @@ EXPLAIN SELECT
     LIMIT 5;
 ```
 
-17. Open app/models/recipe.rb and change the recommended method to:
+17. Open `app/models/recipe.rb` and change the recommended method to:
 
 ```
   def recommended(limit = 5)
