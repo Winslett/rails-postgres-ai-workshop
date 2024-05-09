@@ -101,13 +101,6 @@ GEM
     drb (2.1.1)
       ruby2_keywords
     erubi (1.12.0)
-    faraday (2.7.11)
-      base64
-      faraday-net_http (>= 2.0, < 3.1)
-      ruby2_keywords (>= 0.0.4)
-    faraday-multipart (1.0.4)
-      multipart-post (~> 2)
-    faraday-net_http (3.0.2)
     globalid (1.2.1)
       activesupport (>= 6.1)
     i18n (1.14.1)
@@ -136,10 +129,7 @@ GEM
     mini_portile2 (2.8.6)
     minitest (5.20.0)
     msgpack (1.7.2)
-    multipart-post (2.3.0)
     mutex_m (0.1.2)
-    neighbor (0.3.2)
-      activerecord (>= 6.1)
     net-imap (0.4.1)
       date
       net-protocol
@@ -214,9 +204,6 @@ GEM
     reline (0.3.9)
       io-console (~> 0.5)
     rexml (3.2.6)
-    ruby-openai (5.1.0)
-      faraday (>= 1)
-      faraday-multipart (>= 1)
     ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
     selenium-webdriver (4.14.0)
@@ -266,14 +253,12 @@ DEPENDENCIES
   debug
   importmap-rails
   jbuilder
-  neighbor
   pg (~> 1.1)
   propshaft
   puma (>= 5.0)
   rails (~> 7.1.1)
   redcarpet
   redis (>= 4.0.1)
-  ruby-openai
   selenium-webdriver
   stimulus-rails
   tailwindcss-rails
