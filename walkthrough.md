@@ -441,11 +441,64 @@ SQL
     response = openai.chat(
       parameters: {
         model: 'gpt-3.5-turbo',
-        messages: [{role: "user", content: "Generate an entire shopping list with quantities for #{params[:servings]} portio
-ns of the following recipes: #{q}"}],
+        messages: [{role: "user", content: "Generate an entire shopping list with quantities for #{params[:servings]} portions of the following recipes: #{q}"}],
       }
     )
 
     response.dig("choices", 0, "message", "content")
   end
+```
+
+31. Add the following to show the shopping list to `app/views/recipes/shopping_list.html.erb`:
+
+```
+<header>
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <h1 class="text-3xl font-bold leading-tight tracking-tight text-gray-900">Shopping List</h1>
+  </div>
+</header>
+<main>
+  <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+    <div>
+      <div class="mt-6 border-t border-gray-100">
+        <dl class="divide-y divide-gray-100">
+          <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm font-medium leading-6 text-gray-900">Recipes on shopping list</dt>
+            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+              <ul>
+                <% session_shopping_list.each do |recipe| %>
+                  <li><%= link_to recipe.name, recipe_path(recipe) %></li>
+                <% end %>
+              </ul>
+            </dd>
+          </div>
+        </dl>
+        <form method="get">
+          <dl class="divide-y divide-gray-100">
+            <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+              <dt class="text-sm font-medium leading-6 text-gray-900">How many servings?</dt>
+              <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                <ul>
+                  <input type='text' name='servings' value='<%= params[:servings] %>' class='form-input rounded-md shadow-sm'>
+                </ul>
+              </dd>
+            </div>
+          </dl>
+        </form>
+        <dl class="divide-y divide-gray-100">
+          <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm font-medium leading-6 text-gray-900">Shopping list</dt>
+            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+              <p>Here is your shopping list:</p>
+
+              <pre>
+                <%= @shopping_list %>
+              </pre>
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </div>
+</main>
 ```
