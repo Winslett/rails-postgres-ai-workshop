@@ -359,3 +359,93 @@ SQL
 SQL
   end
 ```
+
+26. Add the following to the `app/views/recipes/show.html.erb`:
+
+```
+        <dl class="divide-y divide-gray-100">
+          <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm font-medium leading-6 text-gray-900">Actions</dt>
+            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+              <ul>
+                  <li><%= link_to "Add to shopping list", add_to_shopping_list_recipe_path(@recipe.id) %></li>
+              </ul>
+            </dd>
+          </div>
+        </dl>
+```
+
+27. Add the following to the `config/routes.rb`:
+
+```
+  get :shopping_list, path: 'shopping-list', to: 'recipes#shopping_list'
+
+  resources :recipes do
+    member do
+      get :add_to_shopping_list, path: 'add-to-shopping-list'
+    end
+  end
+```
+
+28. Change the notification button / icon on app/views/layouts/application.html.erb:
+
+```
+                  <a href='<%= shopping_list_path %>' class="relative rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">                     <span class="absolute -inset-1.5"></span>
+                    <span class="sr-only">View shopping list</span>
+                    <svg class='h-6 w-6' xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                    <% if session_shopping_list.length > 0 %>
+                      <%= session_shopping_list.length %> recipe
+                    <% end %>
+                  </a>
+```
+
+29. Add the following to `app/controllers/recipes_controller.rb`:
+
+```
+  def add_to_shopping_list
+    @recipe = Recipe.find(params[:id])
+
+    add_to_session_shopping_list(@recipe)
+
+    redirect_back(fallback_location: root_path)
+  end
+
+  def shopping_list
+    @shopping_list = Recipe.shopping_list(session_shopping_list, servings: params[:servings] || 4)
+  end
+
+  private
+  def add_to_session_shopping_list(recipe)
+    session[:shopping_list] ||= []
+    session[:shopping_list] << recipe.id
+    session[:shopping_list].uniq!
+  end
+
+  helper_method :session_shopping_list
+  def session_shopping_list
+    @session_shopping_list ||= begin
+                                 session[:shopping_list] ||= []
+                                 Recipe.find(session[:shopping_list])
+                               end
+  end
+```
+
+30. Add the following to `app/models/recipe.rb`:
+
+```
+  def self.shopping_list(recipes, params)
+    openai = OpenAI::Client.new(access_token: Rails.application.credentials.openai.api_key)
+    q = recipes.map { |recipe| recipe.description }.join(" and recipe ")
+
+    response = openai.chat(
+      parameters: {
+        model: 'gpt-3.5-turbo',
+        messages: [{role: "user", content: "Generate an entire shopping list with quantities for #{params[:servings]} portio
+ns of the following recipes: #{q}"}],
+      }
+    )
+
+    response.dig("choices", 0, "message", "content")
+  end
+```
